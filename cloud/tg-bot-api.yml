@@ -1,0 +1,24 @@
+﻿version: '3.8'
+
+networks:
+  general_general:
+    external: true
+
+volumes:
+  tg-bot-api:
+
+services:
+  tg-bot-api:
+    container_name: tg-bot-api
+    image: aiogram/telegram-bot-api:latest
+    restart: always
+    expose:
+      - "8081"
+    volumes:
+      - tg-bot-api:/var/lib/telegram-bot-api
+    environment:
+      TELEGRAM_API_ID: ${TG_API_ID}
+      TELEGRAM_API_HASH: ${TG_API_HASH}
+      TELEGRAM_LOCAL: 'true'
+    networks:
+      - general_general

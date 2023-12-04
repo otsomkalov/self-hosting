@@ -1,0 +1,33 @@
+version: '3.8'
+
+networks:
+  general_general:
+    external: true
+
+volumes:
+  wg:
+
+services:
+  vpn:
+    image: weejewel/wg-easy:latest
+    container_name: vpn
+    restart: always
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - "51820:51820/udp"
+    expose:
+      - "51821/tcp"
+    environment:
+      - WG_HOST=${WG_HOST}
+      - PASSWORD=${PASSWORD}
+      - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
+      - TZ=Etc/UTC
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      - wg:/etc/wireguard
+    networks:
+      - general_general

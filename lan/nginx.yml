@@ -1,0 +1,26 @@
+version: '3.8'
+
+networks:
+  general_general:
+    external: true
+  monitoring_monitoring:
+    external: true
+  media_media:
+    external: true
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+    volumes:
+      - ${CFG_PATH}:/etc/nginx/nginx.conf:ro
+      - ${CERTS_PATH}/cert.pem:/certs/cert.pem:ro
+      - ${CERTS_PATH}/key.key:/certs/key.key:ro
+    networks:
+      - general_general
+      - media_media
+      - monitoring_monitoring

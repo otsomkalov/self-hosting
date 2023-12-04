@@ -1,0 +1,31 @@
+version: '3.8'
+
+networks:
+  general_general:
+    external: true
+
+volumes:
+  tg-bot-api_tg-bot-api:
+    external: true
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+      - "8081:8081/tcp"
+    volumes:
+      - ${CFG_PATH}:/etc/nginx/nginx.conf:ro
+      - ${DNS_CERTS_PATH}/fullchain.pem:/dns-certs/cert.pem:ro
+      - ${DNS_CERTS_PATH}/privkey.pem:/dns-certs/key.pem:ro
+      - ${VPN_CERTS_PATH}/fullchain.pem:/vpn-certs/cert.pem:ro
+      - ${VPN_CERTS_PATH}/privkey.pem:/vpn-certs/key.pem:ro
+      - ${TG_API_CERTS_PATH}/fullchain.pem:/tg-certs/cert.pem:ro
+      - ${TG_API_CERTS_PATH}/privkey.pem:/tg-certs/key.pem:ro
+      - tg-bot-api_tg-bot-api:/var/lib/telegram-bot-api
+    networks:
+      general_general:
+        ipv4_address: 172.23.0.254
