@@ -6,7 +6,6 @@ networks:
 volumes:
   downloads:
   qbittorrent:
-  plex:
   jellyfin-cfg:
   jellyfin-cache:
   
@@ -27,36 +26,6 @@ services:
       - "8080:8080"
       - "6881:6881"
       - "6881:6881/udp"
-    networks:
-      - media
-  plex:
-    image: lscr.io/linuxserver/plex:latest
-    container_name: plex
-    restart: always
-    devices:
-      - /dev/dri:/dev/dri
-    expose:
-      - "32400:32400"
-      - "32400:32400/udp"
-      - "1900:1900/udp"
-      - "5353:5353/udp"
-      - "8324:8324"
-      - "32410:32410/udp"
-      - "32412:32412/udp"
-      - "32413:32413/udp"
-      - "32414:32414/udp"
-      - "32469:32469"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - VERSION=docker
-      - PLEX_CLAIM=${PLEX_CLAIM}
-      - ADVERTISE_IP=${IP}
-    volumes:
-      - plex:/config
-      - downloads:/tv
-      - downloads:/movies
     networks:
       - media
   jellyfin:
