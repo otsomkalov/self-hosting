@@ -19,6 +19,8 @@ services:
       - "8081:8081/tcp"
     volumes:
       - ${CFG_PATH}:/etc/nginx/nginx.conf:ro
+      - ${GENERAL_CERTS_PATH}/fullchain.pem:/general-certs/cert.pem:ro
+      - ${GENERAL_CERTS_PATH}/privkey.pem:/general-certs/key.pem:ro
       - ${DNS_CERTS_PATH}/fullchain.pem:/dns-certs/cert.pem:ro
       - ${DNS_CERTS_PATH}/privkey.pem:/dns-certs/key.pem:ro
       - ${VPN_CERTS_PATH}/fullchain.pem:/vpn-certs/cert.pem:ro
