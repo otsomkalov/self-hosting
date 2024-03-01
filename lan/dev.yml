@@ -13,7 +13,7 @@ services:
       - "10001:10001"
       - "10002:10002"
   webm-to-mp4-tg-bot-converter-dev:
-    image: infinitu1327/ffmpeg-azure-storage-worker:latest
+    image: infinitu1327/ffmpeg-azure-storage-worker:nightly
     container_name: webm-to-mp4-tg-bot-converter-dev
     restart: always
     environment:
@@ -29,7 +29,7 @@ services:
       Delay: 00:00:30
   webm-to-mp4-tg-bot-thumbnailer-dev:
     container_name: webm-to-mp4-tg-bot-thumbnailer-dev
-    image: infinitu1327/ffmpeg-azure-storage-worker:latest
+    image: infinitu1327/ffmpeg-azure-storage-worker:nightly
     restart: always
     environment:
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
