@@ -34,6 +34,8 @@ services:
     user: 1000:1000
     group_add:
       - "109"
+      - "44"
+      - "106"
     volumes:
       - jellyfin-cfg:/config
       - jellyfin-cache:/cache
