@@ -3,7 +3,7 @@ version: '3.0'
 services:
   remove-sound-tg-bot-converter-dev:
     image: infinitu1327/ffmpeg-azure-storage-worker:nightly
-    container_name: webm-to-mp4-tg-bot-converter-prd
+    container_name: remove-sound-tg-bot-converter-dev
     restart: always
     environment:
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
@@ -16,7 +16,7 @@ services:
       FFMpeg:Arguments: -filter:v scale='trunc(iw/2)*2:trunc(ih/2)*2' -max_muxing_queue_size 1024 -c copy -an -y
       Delay: 00:01:00
   remove-sound-tg-bot-thumbnailer-dev:
-    container_name: webm-to-mp4-tg-bot-thumbnailer-prd
+    container_name: remove-sound-tg-bot-thumbnailer-dev
     image: infinitu1327/ffmpeg-azure-storage-worker:nightly
     restart: always
     environment:
