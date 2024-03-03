@@ -13,7 +13,7 @@ services:
       Storage:Output:Queue: converter-output
       Storage:Output:Container: converter-output
       FFMpeg:Path: /usr/bin/ffmpeg
-      FFMpeg:Arguments: -filter:v scale='trunc(iw/2)*2:trunc(ih/2)*2' -max_muxing_queue_size 1024 -c copy -an -y
+      FFMpeg:Arguments: -max_muxing_queue_size 1024 -c copy -an -y
       Delay: 00:01:00
   remove-sound-tg-bot-thumbnailer-dev:
     container_name: remove-sound-tg-bot-thumbnailer-dev
