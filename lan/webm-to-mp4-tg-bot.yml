@@ -14,7 +14,7 @@ services:
       Storage:Output:Container: converter-output
       FFMpeg:Path: /usr/bin/ffmpeg
       FFMpeg:Arguments: -filter:v scale='trunc(iw/2)*2:trunc(ih/2)*2' -c:v hevc -c:a aac -max_muxing_queue_size 1024 -map 0:v:0 -map 0:a? -y
-      FFMpeg:TargetExtension: mp4
+      FFMpeg:TargetExtension: .mp4
       Delay: 00:01:00
   webm-to-mp4-tg-bot-thumbnailer-prd:
     container_name: webm-to-mp4-tg-bot-thumbnailer-prd
@@ -29,5 +29,5 @@ services:
       Storage:Output:Container: thumbnailer-output
       FFMpeg:Path: /usr/bin/ffmpeg
       FFMpeg:Arguments: -map 0:v:0 -ss 1 -vframes 1 -y
-      FFMpeg:TargetExtension: jpg
+      FFMpeg:TargetExtension: .jpg
       Delay: 00:01:00
