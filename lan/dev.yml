@@ -2,7 +2,6 @@
 
 volumes:
   azure-storage-emulator:
-  tabby:
 
 services:
   azure-storage-emulator:
@@ -13,13 +12,3 @@ services:
       - "10000:10000"
       - "10001:10001"
       - "10002:10002"
-  tabby:
-    container_name: tabby
-    restart: always
-    image: tabbyml/tabby
-    entrypoint: /opt/tabby/bin/tabby-cpu
-    command: serve --model StarCoder-1B
-    volumes:
-      - tabby:/data
-    ports:
-      - "8090:8080"
