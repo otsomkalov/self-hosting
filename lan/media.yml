@@ -8,6 +8,7 @@ volumes:
   qbittorrent:
   jellyfin-cfg:
   jellyfin-cache:
+  media-file-browser:    
   
 services:
   qbittorrent:
@@ -50,5 +51,18 @@ services:
       - JELLYFIN_PublishedServerUrl=https://192.168.3.254
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
+    networks:
+      - media
+  media-file-browser:
+    image: hurlenko/filebrowser
+    user: "${UID}:${GID}"
+    ports:
+      - "60000:8080"
+    volumes:
+      - downloads:/data
+      - media-file-browser:/config
+    environment:
+      - FB_BASEURL=/filebrowser
+    restart: always
     networks:
       - media
