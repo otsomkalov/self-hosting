@@ -8,8 +8,8 @@ volumes:
   qbittorrent:
   jellyfin-cfg:
   jellyfin-cache:
-  media-file-browser:    
-  
+  media-file-browser:
+
 services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -53,16 +53,18 @@ services:
       - /dev/dri/renderD128:/dev/dri/renderD128
     networks:
       - media
-  media-file-browser:
+  downloads-file-browser:
+    container_name: downloads-file-browser
     image: hurlenko/filebrowser
     user: "${UID}:${GID}"
-    ports:
-      - "60000:8080"
+    expose:
+      - "8080"
     volumes:
       - downloads:/data
       - media-file-browser:/config
     environment:
-      - FB_BASEURL=/filebrowser
+      - FB_BASEURL=/
+      - FB_NOAUTH=true
     restart: always
     networks:
       - media
