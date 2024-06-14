@@ -14,8 +14,8 @@ services:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: always
-    ports:
-      - "9443:9443"
+    expose:
+      - 9443
     volumes:
       - portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
