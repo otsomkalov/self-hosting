@@ -9,7 +9,7 @@ volumes:
 
 services:
   vpn:
-    image: weejewel/wg-easy:latest
+    image: ghcr.io/wg-easy/wg-easy:latest
     container_name: vpn
     restart: always
     cap_add:
