@@ -15,6 +15,7 @@ services:
       FFMpeg:Path: /usr/bin/ffmpeg
       FFMpeg:Arguments: -max_muxing_queue_size 1024 -c copy -an -y
       Delay: 00:01:00
+      Name: remove-sound-tg-bot-converter-prd
   remove-sound-tg-bot-thumbnailer-prd:
     container_name: remove-sound-tg-bot-thumbnailer-prd
     image: infinitu1327/ffmpeg-azure-storage-worker:stable
@@ -30,3 +31,4 @@ services:
       FFMpeg:Arguments: -map 0:v:0 -ss 1 -vframes 1 -y
       FFMpeg:TargetExtension: .jpg
       Delay: 00:01:00
+      Name: remove-sound-tg-bot-thumbnailer-prd
