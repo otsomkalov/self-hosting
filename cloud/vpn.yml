@@ -21,7 +21,7 @@ services:
       - "51821/tcp"
     environment:
       - WG_HOST=${WG_HOST}
-      - PASSWORD=${PASSWORD}
+      - PASSWORD_HASH=${PASSWORD_HASH}
       - WG_DEFAULT_DNS=${WG_DEFAULT_DNS}
       - TZ=Etc/UTC
     sysctls:
