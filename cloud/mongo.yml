@@ -1,0 +1,29 @@
+﻿version: '3.8'
+
+volumes:
+  mongo-dev:
+  mongo-prd:
+
+services:
+  mongo-dev:
+    container_name: mongo-dev
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo-dev:/data
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${DEV_MONGO_PASS}
+    ports:
+      - "27016:27017"
+  mongo-prd:
+    container_name: mongo-prd
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo-prd:/data
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${PRD_MONGO_PASS}
+    ports:
+      - "27017:27017"
