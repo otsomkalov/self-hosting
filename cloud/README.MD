@@ -1,19 +1,61 @@
-# Cloud server 
+# Cloud server
+
+# Basic setup
+
+## SSH
+
+### Client
+
+**Windows**
+
+1. Generate SSH key:
+    ```bash
+    ssh-keygen -t rsa -b 4096
+    ```
+
+    By default, keys will be put into the USERPROFILE directory.
+
+2. Put SSH key to server:
+    ```bash
+    cat ~/.ssh/id_rsa.pub | ssh user@address "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+    ```
+
+3. Enable `ssh-agent` service
+    ```
+    Get-Service -Name ssh-agent | Set-Service -StartupType Automatic
+    ```
+
+4. Add key to ssh-agent
+    ```
+    ssh-add ~\.ssh\id_rsa
+    ```
+
+### Server
+
+In `/etc/ssh/sshd_config` set:
+
+```
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+```
+
+# Services
 
 The order of setup is:
+
 1. [Portainer][1]
 2. [Wireguard][2] + [AdGuard Home][3] + [TG BOT API][4]
 3. [NGINX][5]
 
-# Portainer
+## Portainer
 
 Used to manage stacks & containers.
 
-# DNS
+## DNS
 
 DNS filtering implemented using AdGuard Home
 
-## SSL
+### SSL
 
 You'll need valid SLL cert to secure your connection to the site and enable DoT and DoH
 
