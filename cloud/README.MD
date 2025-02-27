@@ -2,6 +2,21 @@
 
 # Basic setup
 
+1. Create user
+```bash
+sudo adduser <user>
+usermod -aG sudo <user>
+```
+2. Disable root password login in /etc/ssh/sshd_config
+```
+PermitRootLogin prohibit-password
+```
+3. Install Docker and configure
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
 ## SSH
 
 ### Client
@@ -51,6 +66,8 @@ The order of setup is:
 
 Used to manage stacks & containers.
 
+Create it providing `-p` flag with `general` value
+
 ## DNS
 
 DNS filtering implemented using AdGuard Home
@@ -60,8 +77,9 @@ DNS filtering implemented using AdGuard Home
 You'll need valid SLL cert to secure your connection to the site and enable DoT and DoH
 
 1. Get wildcard cert for domain:
-    1. Configure DNS redirect using domain provider
-    2. `certbot certonly --manual --preferred-challenges=dns --email <email> --server https://acme-v02.api.letsencrypt.org/directory --agree-tos -d *.<domain>`
+   1. Configure DNS redirect using domain provider
+   2. `sudo snap install --classic certbot`
+   3. `certbot certonly --manual --preferred-challenges=dns --email <email> --server https://acme-v02.api.letsencrypt.org/directory --agree-tos -d *.<domain>`
 
 [1]: https://github.com/portainer/portainer
 [2]: https://github.com/wg-easy/wg-easy#2-run-wireguard-easy
