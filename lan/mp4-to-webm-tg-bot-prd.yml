@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mp4-to-webm-tg-bot-converter-prd:
+    image: infinitu1327/ffmpeg-azure-storage-worker:stable
+    container_name: mp4-to-webm-tg-bot-converter-prd
+    restart: always
+    environment:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
+      Storage:ConnectionString: ${STORAGE_CONNECTION}
+      Storage:Input:Queue: converter-input
+      Storage:Input:Container: converter-input
+      Storage:Output:Queue: converter-output
+      Storage:Output:Container: converter-output
+      FFMpeg:Path: /usr/bin/ffmpeg
+      FFMpeg:Arguments: -filter:v scale='trunc(iw/2)*2:trunc(ih/2)*2' -c:v vp9 -c:a opus -max_muxing_queue_size 1024 -map 0:v:0 -map 0:a? -strict -2 -y
+      FFMpeg:TargetExtension: .webm
+      Delay: 00:01:00
+      Name: mp4-to-webm-tg-bot-converter-prd
+  mp4-to-webm-tg-bot-thumbnailer-prd:
+    container_name: mp4-to-webm-tg-bot-thumbnailer-prd
+    image: infinitu1327/ffmpeg-azure-storage-worker:stable
+    restart: always
+    environment:
+      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
+      Storage:ConnectionString: ${STORAGE_CONNECTION}
+      Storage:Input:Queue: thumbnailer-input
+      Storage:Input:Container: thumbnailer-input
+      Storage:Output:Queue: thumbnailer-output
+      Storage:Output:Container: thumbnailer-output
+      FFMpeg:Path: /usr/bin/ffmpeg
+      FFMpeg:Arguments: -map 0:v:0 -ss 1 -vframes 1 -y
+      FFMpeg:TargetExtension: .jpg
+      Delay: 00:01:00
+      Name: mp4-to-webm-tg-bot-thumbnailer-prd
+
