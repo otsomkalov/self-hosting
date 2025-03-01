@@ -1,0 +1,27 @@
+version: '3.8'
+
+volumes:
+  redis-dev:
+  redis-prod:
+
+services:
+  redis-dev:
+    container_name: redis-dev
+    image: redis:alpine
+    restart: always
+    volumes:
+      - redis-dev:/data
+    environment:
+      REDIS_PASSWORD: ${DEV_REDIS_PASS}
+    ports:
+      - "6378:6379"
+  redis-prod:
+    container_name: redis-prod
+    image: redis:alpine
+    restart: always
+    volumes:
+      - /redis/prod:/data
+    environment:
+      REDIS_PASSWORD: ${PRD_REDIS_PASS}
+    ports:
+      - "6379:6379"
