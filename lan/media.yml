@@ -10,12 +10,12 @@ volumes:
   jellyfin-cache:
   media-file-browser:
   plex:
+  navidrome:
 
 services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
-    restart: always
     environment:
       - PUID=1000
       - PGID=1000
@@ -72,7 +72,6 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
-    restart: always
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     expose:
@@ -96,5 +95,15 @@ services:
     volumes:
       - plex:/config
       - /mnt/downloads:/downloads
+    networks:
+      - media
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    ports:
+      - "4533:4533"
+    volumes:
+      - navidrome:/data
+      - /mnt/downloads/music:/music
     networks:
       - media
