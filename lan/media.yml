@@ -22,7 +22,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - qbittorrent:/config
-      - downloads:/downloads
+      - /mnt/downloads:/downloads
     expose:
       - "8080:8080"
       - "6881:6881"
@@ -40,7 +40,7 @@ services:
     volumes:
       - jellyfin-cfg:/config
       - jellyfin-cache:/cache
-      - downloads:/media
+      - /mnt/downloads:/media
     restart: always
     ports:
       - "1900:1900/udp"
@@ -60,7 +60,7 @@ services:
     expose:
       - "8080"
     volumes:
-      - downloads:/data
+      - /mnt/downloads:/data
       - media-file-browser:/config
     environment:
       - FB_BASEURL=/
