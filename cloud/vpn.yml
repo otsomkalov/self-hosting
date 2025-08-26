@@ -30,4 +30,5 @@ services:
     volumes:
       - wg:/etc/wireguard
     networks:
-      - general_general
+      general_general:
+        ipv4_address: 172.23.0.252
