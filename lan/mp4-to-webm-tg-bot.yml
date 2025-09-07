@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mp4-to-webm-tg-bot-converter-prd:
-    image: infinitu1327/ffmpeg-azure-storage-worker:stable
+    image: infinitu1327/ffmpeg-worker:az-stable
     container_name: mp4-to-webm-tg-bot-converter-prd
     restart: always
     environment:
@@ -19,7 +19,7 @@ services:
       Name: mp4-to-webm-tg-bot-converter-prd
   mp4-to-webm-tg-bot-thumbnailer-prd:
     container_name: mp4-to-webm-tg-bot-thumbnailer-prd
-    image: infinitu1327/ffmpeg-azure-storage-worker:stable
+    image: infinitu1327/ffmpeg-worker:az-stable
     restart: always
     environment:
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
