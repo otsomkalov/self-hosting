@@ -26,6 +26,20 @@ services:
     networks:
       - monitoring
 
+  ecoflow-exporter:
+    image: infinitu1327/ecoflow-exporter:latest
+    container_name: ecoflow-exporter
+    restart: always
+    environment:
+      DEVICE_SN: ${DEVICE_SN}
+      ECOFLOW_USERNAME: ${ECOFLOW_USERNAME}
+      ECOFLOW_PASSWORD: "${ECOFLOW_PASSWORD}"
+      EXPORTER_PORT: 9091
+    expose:
+      - 9091
+    networks:
+      - monitoring
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -50,4 +64,3 @@ services:
     restart: always
     networks:
       - monitoring
-    
