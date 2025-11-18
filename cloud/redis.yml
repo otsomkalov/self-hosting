@@ -2,7 +2,7 @@ version: '3.8'
 
 volumes:
   redis-dev:
-  redis-prod:
+  redis-prd:
 
 services:
   redis-dev:
@@ -14,12 +14,12 @@ services:
       - redis-dev:/data
     ports:
       - "6378:6379"
-  redis-prod:
-    container_name: redis-prod
+  redis-prd:
+    container_name: redis-prd
     image: redis:alpine
     restart: always
     command: 'redis-server --requirepass ${PRD_REDIS_PASS}'
     volumes:
-      - /redis/prod:/data
+      - redis-prd:/data
     ports:
       - "6379:6379"
