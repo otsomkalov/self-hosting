@@ -1,5 +1,3 @@
-version: '3.0'
-
 services:
   webm-to-mp4-tg-bot-converter-dev:
     image: infinitu1327/ffmpeg-worker:az-nightly

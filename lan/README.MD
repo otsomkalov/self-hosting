@@ -1,4 +1,4 @@
-﻿# LAN server
+# LAN server
 
 The order of setup is:
 1. [Portainer][1]

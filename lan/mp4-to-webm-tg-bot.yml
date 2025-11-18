@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mp4-to-webm-tg-bot-converter-prd:
     image: infinitu1327/ffmpeg-worker:az-stable
