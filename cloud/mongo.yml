@@ -1,14 +1,12 @@
-volumes:
-  mongo-dev:
-  mongo-prd:
-
 services:
   mongo-dev:
     container_name: mongo-dev
     image: mongo:latest
     restart: always
     volumes:
-      - mongo-dev:/data
+      - /mongo/dev:/data
+      - /mongo/dev/db:/data/db
+      - /mongo/dev/configdb:/data/configdb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${DEV_MONGO_PASS}
@@ -19,7 +17,9 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - mongo-prd:/data
+      - /mongo/prd:/data
+      - /mongo/prd/db:/data/db
+      - /mongo/prd/configdb:/data/configdb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${PRD_MONGO_PASS}
