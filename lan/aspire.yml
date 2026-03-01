@@ -1,0 +1,14 @@
+version: '3.0'
+
+networks:
+  general:
+
+services:
+  aspire:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    container_name: aspire
+    ports:
+      - "18888:18888"
+      - "4317:18889"
+    networks:
+      - general
