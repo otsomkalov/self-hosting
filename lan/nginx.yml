@@ -5,8 +5,6 @@ networks:
     external: true
   media_media:
     external: true
-  aspire_monitoring:
-    external: true
 
 services:
   nginx:
@@ -24,4 +22,3 @@ services:
       - general_general
       - media_media
       - monitoring_monitoring
-      - aspire_monitoring
