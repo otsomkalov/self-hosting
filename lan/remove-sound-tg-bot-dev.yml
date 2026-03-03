@@ -13,7 +13,7 @@ services:
       FFMpeg:Path: /usr/bin/ffmpeg
       FFMpeg:Arguments: -max_muxing_queue_size 1024 -c copy -an -y
       Delay: 00:01:00
-      Name: remove-sound-tg-bot-converter-dev
+      OTEL_SERVICE_NAME: remove-sound-tg-bot-converter-dev
   remove-sound-tg-bot-thumbnailer-dev:
     container_name: remove-sound-tg-bot-thumbnailer-dev
     image: infinitu1327/ffmpeg-worker:az-nightly
@@ -29,4 +29,4 @@ services:
       FFMpeg:Arguments: -map 0:v:0 -ss 1 -vframes 1 -y
       TargetExtension: .jpg
       Delay: 00:01:00
-      Name: remove-sound-tg-bot-thumbnailer-dev
+      OTEL_SERVICE_NAME: remove-sound-tg-bot-thumbnailer-dev
