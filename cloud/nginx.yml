@@ -1,6 +1,8 @@
 networks:
   general_general:
     external: true
+  keycloak_keycloak:
+    external: true
 
 volumes:
   tg-bot-api_tg-bot-api:
@@ -29,3 +31,4 @@ services:
     networks:
       general_general:
         ipv4_address: 172.23.0.254
+      keycloak_keycloak:

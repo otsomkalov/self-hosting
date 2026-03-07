@@ -1,8 +1,12 @@
 version: '3.1'
 
+networks:
+  keycloak_keycloak:
+    external: true
+
 services:
-  pg-prod:
-    container_name: pg-prod
+  pg-prd:
+    container_name: pg-prd
     image: postgres:alpine
     restart: always
     environment:
@@ -11,3 +15,5 @@ services:
       - "5432:5432"
     volumes:
       - /pg/prd:/var/lib/postgresql/data
+    networks:
+      keycloak_keycloak:
