@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+  pg-prod:
+    container_name: pg-prod
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS}
+    ports:
+      - "5432:5432"
+    volumes:
+      - /pg/prd:/var/lib/postgresql/data
