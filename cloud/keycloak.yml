@@ -1,0 +1,23 @@
+networks:
+  general_general:
+    external: true
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KC_HOSTNAME: ${HOSTNAME}
+      KC_HOSTNAME_PORT: 7080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
+      KEYCLOAK_ADMIN: ${KC_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_PASS}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://localhost:5432/keycloak
+      KC_DB_USERNAME: ${PG_USER}
+      KC_DB_PASSWORD: ${PG_PASS}
+    command: [ "start", "--optimized", "--http-enabled=true", "--http-port", "7080" ]
+    expose:
+      - "7080"
+    networks:
+      general_general:

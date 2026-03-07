@@ -1,8 +1,8 @@
 version: '3.1'
 
 services:
-  pg-prod:
-    container_name: pg-prod
+  pg-prd:
+    container_name: pg-prd
     image: postgres:alpine
     restart: always
     environment:
