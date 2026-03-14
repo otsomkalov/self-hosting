@@ -14,7 +14,7 @@ services:
       FFMpeg:Arguments: -filter:v scale='trunc(iw/2)*2:trunc(ih/2)*2' -c:v vp9 -c:a libopus -max_muxing_queue_size 1024 -map 0:v:0 -map 0:a? -y
       TargetExtension: .webm
       Delay: 00:01:00
-      Name: mp4-to-webm-tg-bot-converter-prd
+      OTEL_SERVICE_NAME: mp4-to-webm-tg-bot-converter-prd
   mp4-to-webm-tg-bot-thumbnailer-prd:
     container_name: mp4-to-webm-tg-bot-thumbnailer-prd
     image: infinitu1327/ffmpeg-worker:az-stable
@@ -30,5 +30,5 @@ services:
       FFMpeg:Arguments: -map 0:v:0 -ss 1 -vframes 1 -y
       TargetExtension: .jpg
       Delay: 00:01:00
-      Name: mp4-to-webm-tg-bot-thumbnailer-prd
+      OTEL_SERVICE_NAME: mp4-to-webm-tg-bot-thumbnailer-prd
 
