@@ -1,0 +1,18 @@
+version: '3.0'
+
+networks:
+  aspire:
+
+services:
+  aspire:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    container_name: aspire
+    expose:
+      - 18888
+    ports:
+      - "4317:18889"
+    networks:
+      - aspire
+    environment:
+      - DASHBOARD__OTLP__AUTHMODE=ApiKey
+      - DASHBOARD__OTLP__PRIMARYAPIKEY=${AS_KEY}
