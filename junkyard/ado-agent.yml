@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ado-agent:
+    container_name: ado-agent
+    restart: always
+    build:
+      context: .
+      dockerfile: ./ado-agent.dockerfile
+    environment:
+      AZP_URL: ${URL}
+      AZP_TOKEN: ${TOKEN}
+      AZP_POOL: ${POOL}
+      AZP_AGENT_NAME: ${NAME}
