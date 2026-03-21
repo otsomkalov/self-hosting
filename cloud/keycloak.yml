@@ -5,6 +5,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
+    restart: always
     command: start --hostname=${HOSTNAME}
     environment:
       KC_HOSTNAME_STRICT: false
