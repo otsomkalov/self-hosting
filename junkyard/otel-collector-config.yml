@@ -1,6 +1,6 @@
 extensions:
   bearertokenauth/server:
-    filename: "bearer.token"
+    token: "randomtoken"
 
 receivers:
   otlp:
