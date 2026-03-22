@@ -1,8 +1,15 @@
+extensions:
+  bearertokenauth/withscheme:
+    scheme: Bearer
+    filename: "bearer.token"
+
 receivers:
   otlp:
     protocols:
       grpc:
         endpoint: 0.0.0.0:4317
+        auth:
+          authenticator: bearertokenauth/withscheme
 
 exporters:
   otlp/jaeger:
@@ -21,6 +28,8 @@ processors:
     timeout: 10s
 
 service:
+  extensions:
+    - bearertokenauth/withscheme
   pipelines:
     traces:
       receivers: [ otlp ]
