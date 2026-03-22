@@ -1,5 +1,6 @@
 extensions:
-  bearertokenauth:
+  bearertokenauth/withscheme:
+    scheme: Bearer
     filename: "bearer.token"
 
 receivers:
@@ -8,7 +9,7 @@ receivers:
       grpc:
         endpoint: 0.0.0.0:4317
         auth:
-          authenticator: bearertokenauth
+          authenticator: bearertokenauth/withscheme
 
 exporters:
   otlp/jaeger:
