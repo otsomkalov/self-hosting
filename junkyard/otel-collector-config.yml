@@ -28,6 +28,8 @@ processors:
     timeout: 10s
 
 service:
+  extensions:
+    - bearertokenauth/withscheme
   pipelines:
     traces:
       receivers: [ otlp ]
