@@ -26,6 +26,8 @@ services:
     container_name: prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+      - "--storage.tsdb.retention.time=15d"
+      - "--storage.tsdb.retention.size=10GB"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
