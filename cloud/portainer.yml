@@ -9,7 +9,7 @@ volumes:
 
 services:
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ee:alpine
     container_name: portainer
     restart: always
     expose:

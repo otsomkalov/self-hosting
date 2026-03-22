@@ -5,6 +5,8 @@ networks:
     external: true
   aspire_aspire:
     external: true
+  otel_otel:
+    external: true
 
 volumes:
   tg-bot-api_tg-bot-api:
@@ -35,3 +37,4 @@ services:
         ipv4_address: 172.23.0.254
       keycloak_keycloak:
       aspire_aspire:
+      otel_otel:
