@@ -1,6 +1,8 @@
 networks:
   general_general:
     external: true
+  open-observe_open-observe:
+    external: true
 
 volumes:
   tg-bot-api_tg-bot-api:
@@ -14,6 +16,7 @@ services:
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
+      - "4317:4317/tcp"
       - "8081:8081/tcp"
     volumes:
       - ${CFG_PATH}:/etc/nginx/nginx.conf:ro
@@ -29,3 +32,4 @@ services:
     networks:
       general_general:
         ipv4_address: 172.23.0.254
+      open-observe_open-observe:

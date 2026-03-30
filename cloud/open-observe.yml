@@ -1,0 +1,23 @@
+name: open-observe
+
+volumes:
+  open-observe:
+
+networks:
+  open-observe:
+
+services:
+  open-observe:
+    image: public.ecr.aws/zinclabs/openobserve:latest
+    container_name: open-observe
+    volumes:
+      - open-observe:/data
+    environment:
+      - ZO_DATA_DIR=/data
+      - ZO_ROOT_USER_EMAIL=${ROOT_EMAIL}
+      - ZO_ROOT_USER_PASSWORD=${ROOT_PASS}
+    expose:
+      - "5080"
+      - "5081"
+    networks:
+      - open-observe
