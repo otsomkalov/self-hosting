@@ -4,7 +4,6 @@ services:
     container_name: remove-sound-tg-bot-converter-dev
     restart: always
     environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
       Storage:ConnectionString: ${STORAGE_CONNECTION}
       Storage:Input:Queue: converter-input
       Storage:Input:Container: converter-input
@@ -14,12 +13,13 @@ services:
       FFMpeg:Arguments: -max_muxing_queue_size 1024 -c copy -an -y
       Delay: 00:01:00
       OTEL_SERVICE_NAME: remove-sound-tg-bot-converter-dev
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_EXPORTER_OTLP_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS}
   remove-sound-tg-bot-thumbnailer-dev:
     container_name: remove-sound-tg-bot-thumbnailer-dev
     image: infinitu1327/ffmpeg-worker:az-nightly
     restart: always
     environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
       Storage:ConnectionString: ${STORAGE_CONNECTION}
       Storage:Input:Queue: thumbnailer-input
       Storage:Input:Container: thumbnailer-input
@@ -30,3 +30,5 @@ services:
       TargetExtension: .jpg
       Delay: 00:01:00
       OTEL_SERVICE_NAME: remove-sound-tg-bot-thumbnailer-dev
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_EXPORTER_OTLP_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS}

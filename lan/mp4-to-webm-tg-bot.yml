@@ -4,7 +4,6 @@ services:
     container_name: mp4-to-webm-tg-bot-converter-prd
     restart: always
     environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
       Storage:ConnectionString: ${STORAGE_CONNECTION}
       Storage:Input:Queue: converter-input
       Storage:Input:Container: converter-input
@@ -15,12 +14,13 @@ services:
       TargetExtension: .webm
       Delay: 00:01:00
       OTEL_SERVICE_NAME: mp4-to-webm-tg-bot-converter-prd
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_EXPORTER_OTLP_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS}
   mp4-to-webm-tg-bot-thumbnailer-prd:
     container_name: mp4-to-webm-tg-bot-thumbnailer-prd
     image: infinitu1327/ffmpeg-worker:az-stable
     restart: always
     environment:
-      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APP_INSIGHTS_CONNECTION}
       Storage:ConnectionString: ${STORAGE_CONNECTION}
       Storage:Input:Queue: thumbnailer-input
       Storage:Input:Container: thumbnailer-input
@@ -31,4 +31,5 @@ services:
       TargetExtension: .jpg
       Delay: 00:01:00
       OTEL_SERVICE_NAME: mp4-to-webm-tg-bot-thumbnailer-prd
-
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_EXPORTER_OTLP_HEADERS: ${OTEL_EXPORTER_OTLP_HEADERS}
