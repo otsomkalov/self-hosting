@@ -1,0 +1,42 @@
+networks:
+  general_general:
+    external: true
+
+volumes:
+  authentik-data:
+
+services:
+  authentik-server:
+    image: ghcr.io/goauthentik/server:2026.2.1
+    container_name: authentik-server
+    command: server
+    restart: always
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: pg
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    expose:
+      - "9000"
+    volumes:
+      - authentik-data:/data
+    networks:
+      - general_general
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:2026.2.1
+    container_name: authentik-worker
+    command: worker
+    restart: always
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: pg
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - authentik-data:/data
+    networks:
+      - general_general

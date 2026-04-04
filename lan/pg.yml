@@ -1,0 +1,22 @@
+version: '3.1'
+
+volumes:
+  pg:
+
+networks:
+  general_general:
+    external: true
+
+services:
+  pg:
+    container_name: pg
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg:/var/lib/postgresql/data
+    networks:
+      - general_general
