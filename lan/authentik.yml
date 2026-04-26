@@ -16,7 +16,9 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
+      AUTHENTIK_HOST: authentik.server.home
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_LOG_LEVEL: trace
     expose:
       - "9000"
     volumes:
