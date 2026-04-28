@@ -22,9 +22,8 @@ services:
       - qbittorrent:/config
       - /mnt/downloads:/downloads
     expose:
-      - "8080:8080"
-      - "6881:6881"
-      - "6881:6881/udp"
+      - "8080"
+      - "6881"
     networks:
       - media
   jellyfin:
