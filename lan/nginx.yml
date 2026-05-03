@@ -18,8 +18,8 @@ services:
       - "443:443/tcp"
     volumes:
       - ${CFG_PATH}:/etc/nginx/nginx.conf:ro
-      - ${CERTS_PATH}/cert.pem:/certs/cert.pem:ro
-      - ${CERTS_PATH}/key.key:/certs/key.key:ro
+      - ${CERTS_PATH}/_wildcard.server.home.pem:/etc/nginx/cert.pem:ro
+      - ${CERTS_PATH}/_wildcard.server.home-key.pem:/etc/nginx/key.pem:ro
     networks:
       - general_general
       - media_media
