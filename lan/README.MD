@@ -5,7 +5,13 @@ The order of setup is:
 2. [qBittorrent][2] + [Jellyfin][3]
 3. [NGINX][4]
 
-# Portainer
+# Jackett
+
+Setup torrent trackers indexers
+
+# qBittorrent
+
+[Configure](https://github.com/qbittorrent/search-plugins/wiki/How-to-configure-Jackett-plugin) Jackett plugin
 
 Used to manage stacks & containers.
 
