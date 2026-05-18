@@ -21,16 +21,17 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
       - AUTO_UPDATE=true #optional
+    expose:
+      - 9117
     volumes:
       - jackett-data:/config
       - /mnt/downloads:/downloads
-    expose:
-      - 9117
     networks:
       - general_general
+
   oauth2-jackett:
-    container_name: oauth2-jackett
     image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-jackett
     restart: unless-stopped
     environment: 
       OAUTH2_PROXY_PROVIDER: keycloak-oidc
@@ -61,35 +62,35 @@ services:
       - "109"
       - "44"
       - "106"
-    volumes:
-      - jellyfin-cfg:/config
-      - jellyfin-cache:/cache
-      - /mnt/downloads:/media
     restart: always
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://192.168.3.254
     ports:
       - "1900:1900/udp"
       - "7359:7359/udp"
       - "8920:8920/tcp"
       - "8096:8096/tcp"
-    environment:
-      - JELLYFIN_PublishedServerUrl=https://192.168.3.254
+    volumes:
+      - jellyfin-cfg:/config
+      - jellyfin-cache:/cache
+      - /mnt/downloads:/media
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     networks:
       - general_general
 
   downloads-file-browser:
-    container_name: downloads-file-browser
     image: hurlenko/filebrowser
+    container_name: downloads-file-browser
     user: "1000:1000"
+    restart: always
+    environment:
+      - FB_BASEURL=/
+      - FB_NOAUTH=true
     expose:
       - "8080"
     volumes:
       - /mnt/downloads:/data
       - media-file-browser:/config
-    environment:
-      - FB_BASEURL=/
-      - FB_NOAUTH=true
-    restart: always
     networks:
       - general_general

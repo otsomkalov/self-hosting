@@ -1,16 +1,16 @@
-version: '3.1'
-
-volumes:
-  pg:
+name: pg
 
 networks:
   general_general:
     external: true
 
+volumes:
+  pg:
+
 services:
   pg:
-    container_name: pg
     image: postgres:alpine
+    container_name: pg
     restart: always
     environment:
       POSTGRES_PASSWORD: ${PG_PASS}

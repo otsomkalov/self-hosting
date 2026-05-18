@@ -1,3 +1,5 @@
+name: nginx
+
 networks:
   general_general:
     external: true

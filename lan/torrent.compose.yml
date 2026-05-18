@@ -1,12 +1,12 @@
 name: torrent
 
+networks:
+  general_general:
+    external: true
+
 volumes:
   torrent:
   media_qbittorrent:
-    external: true
-
-networks:
-  general_general:
     external: true
 
 services:
@@ -19,19 +19,19 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
       - WEBUI_PORT=8080
+    expose:
+      - "8080"
+      - "6881"
     volumes:
       - torrent:/config
       - media_qbittorrent:/old_config
       - /mnt/downloads:/downloads
-    expose:
-      - "8080"
-      - "6881"
     networks:
       - general_general
 
   oauth2-torrent:
-    container_name: oauth2-torrent
     image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-torrent
     restart: unless-stopped
     environment: 
       OAUTH2_PROXY_PROVIDER: keycloak-oidc

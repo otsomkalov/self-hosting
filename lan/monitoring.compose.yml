@@ -1,3 +1,5 @@
+name: monitoring
+
 networks:
   monitoring:
 
@@ -41,17 +43,17 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
+    restart: always
     ports:
       - "3000:3000"
     volumes:
       - grafana:/var/lib/grafana
-    restart: always
     networks:
       - monitoring
 
   homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
-    image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
       - ${HA_CFG_PATH}:/config
       - /etc/localtime:/etc/localtime:ro
