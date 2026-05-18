@@ -1,8 +1,10 @@
+name: media
+
 networks:
-  media:
+  general_general:
+    external: true
 
 volumes:
-  downloads:
   qbittorrent:
   jellyfin-cfg:
   jellyfin-cache:
@@ -25,7 +27,7 @@ services:
     expose:
       - 9117
     networks:
-      - media
+      - general_general
   oauth2-jackett:
     container_name: oauth2-jackett
     image: quay.io/oauth2-proxy/oauth2-proxy:latest
@@ -49,25 +51,7 @@ services:
     depends_on:
       - jackett
     networks:
-      - media
-
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
-    container_name: qbittorrent
-    restart: always
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - WEBUI_PORT=8080
-    volumes:
-      - qbittorrent:/config
-      - /mnt/downloads:/downloads
-    expose:
-      - "8080"
-      - "6881"
-    networks:
-      - media
+      - general_general
 
   jellyfin:
     image: jellyfin/jellyfin
@@ -92,7 +76,7 @@ services:
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     networks:
-      - media
+      - general_general
 
   downloads-file-browser:
     container_name: downloads-file-browser
@@ -108,4 +92,4 @@ services:
       - FB_NOAUTH=true
     restart: always
     networks:
-      - media
+      - general_general
