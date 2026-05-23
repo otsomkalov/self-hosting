@@ -7,7 +7,7 @@ The order of setup is:
 
 # Jackett
 
-Setup torrent trackers indexers
+[Setup](https://github.com/qbittorrent/search-plugins/wiki/How-to-configure-Jackett-plugin) torrent trackers indexers
 
 # qBittorrent
 
