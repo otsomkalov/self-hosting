@@ -1,7 +1,7 @@
 name: pg
 
 networks:
-  general_general:
+  general:
     external: true
 
 volumes:
@@ -19,4 +19,4 @@ services:
     volumes:
       - pg:/var/lib/postgresql
     networks:
-      - general_general
+      - general

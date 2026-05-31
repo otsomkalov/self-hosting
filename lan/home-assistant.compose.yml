@@ -1,0 +1,22 @@
+name: home-assistant
+
+networks:
+  general:
+    external: true
+
+volumes:
+  homeassistant:
+
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    volumes:
+      - homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: always
+    expose:
+      - 8123
+    networks:
+      - general
