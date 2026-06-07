@@ -1,0 +1,12 @@
+name: flac-splitter
+
+services:
+  flac-splitter:
+    build: 
+      context: .
+      dockerfile: flac-splitter.Dockerfile
+    container_name: flac-splitter
+    restart: unless-stopped
+    volumes:
+      - /mnt/downloads/music:/input
+      - /music:/output

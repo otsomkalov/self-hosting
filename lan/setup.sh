@@ -161,27 +161,38 @@ docker compose -f $setup_dir/home-assistant.compose.yml \
 up -d
 
 ###
-echo "Step 19. Start monitoring stack"
+echo "Step 19. Start Navidrome"
+
+docker compose -f $setup_dir/navidrome.compose.yml \
+--env-file env.d/navidrome.env \
+up -d
+
+docker compose -f $setup_dir/flac-splitter.compose.yml \
+--env-file env.d/flac-splitter.env \
+up -d
+
+###
+echo "Step 20. Start monitoring stack"
 
 docker compose -f $setup_dir/monitoring.compose.yml \
 --env-file env.d/monitoring.env \
 up -d
 
 ###
-echo "Step 20. Setup mkcert"
+echo "Step 21. Setup mkcert"
 
 curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
 chmod +x mkcert-v*-linux-amd64
 sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 ###
-echo "Step 21. Generate SSL certificates"
+echo "Step 22. Generate SSL certificates"
 
 mkcert -install
 mkcert *.server.local
 
 ###
-echo "Step 22. Start Nginx"
+echo "Step 23. Start Nginx"
 
 docker compose -f $setup_dir/nginx.compose.yml \
 --env-file env.d/nginx.env \

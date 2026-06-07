@@ -18,6 +18,7 @@ services:
     restart: always
     environment:
       - JELLYFIN_PublishedServerUrl=https://192.168.3.254
+      - TZ=Europe/Kyiv
     ports:
       - "7359:7359/udp"
       - "8096:8096/tcp"

@@ -1,0 +1,23 @@
+name: navidrome
+
+volumes:
+  navidrome:
+
+networks:
+  general:
+    external: true
+
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    expose:
+      - "4533"
+    restart: unless-stopped
+    environment:
+      - ND_LOGLEVEL=info
+    volumes:
+      - navidrome:/data
+      - /music:/music:ro
+    networks:
+      - general
