@@ -17,4 +17,5 @@ services:
       - ${CERTS_PATH}/_wildcard.server.local.pem:/etc/nginx/cert.pem:ro
       - ${CERTS_PATH}/_wildcard.server.local-key.pem:/etc/nginx/key.pem:ro
     networks:
-      - general
+      general:
+        ipv4_address: 172.18.0.254

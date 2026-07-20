@@ -1,0 +1,25 @@
+name: calibre
+
+networks:
+  general:
+    external: true
+
+volumes:
+  calibre-web:
+
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Kyiv
+    volumes:
+      - calibre-web:/config
+      - /mnt/main/books:/books
+    expose:
+      - 8083
+    networks:
+      - general

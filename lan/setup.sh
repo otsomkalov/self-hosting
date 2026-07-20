@@ -179,20 +179,27 @@ docker compose -f $setup_dir/monitoring.compose.yml \
 up -d
 
 ###
-echo "Step 21. Setup mkcert"
+echo "Step 21. Start Calibre Web"
+
+docker compose -f $setup_dir/calibre.compose.yml \
+--env-file env.d/calibre.env \
+up -d
+
+###
+echo "Step 22. Setup mkcert"
 
 curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
 chmod +x mkcert-v*-linux-amd64
 sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 ###
-echo "Step 22. Generate SSL certificates"
+echo "Step 23. Generate SSL certificates"
 
 mkcert -install
 mkcert *.server.local
 
 ###
-echo "Step 23. Start Nginx"
+echo "Step 24. Start Nginx"
 
 docker compose -f $setup_dir/nginx.compose.yml \
 --env-file env.d/nginx.env \
