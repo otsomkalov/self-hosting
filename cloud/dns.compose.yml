@@ -1,5 +1,7 @@
+name: dns
+
 networks:
-  general_general:
+  general:
     external: true
 
 volumes:
@@ -28,5 +30,5 @@ services:
       - ${CERTS_PATH}/fullchain.pem:/certs/cert.pem:ro
       - ${CERTS_PATH}/privkey.pem:/certs/key.pem:ro
     networks:
-      general_general:
-        ipv4_address: 172.23.0.253
+      general:
+        ipv4_address: 172.16.0.255

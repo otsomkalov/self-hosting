@@ -1,5 +1,7 @@
+name: tg-bot-api
+
 networks:
-  general_general:
+  general:
     external: true
 
 volumes:
@@ -19,4 +21,4 @@ services:
       TELEGRAM_API_HASH: ${TG_API_HASH}
       TELEGRAM_LOCAL: 'true'
     networks:
-      - general_general
+      - general

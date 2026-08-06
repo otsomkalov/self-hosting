@@ -1,7 +1,7 @@
+name: nginx
+
 networks:
-  general_general:
-    external: true
-  open-observe_open-observe:
+  general:
     external: true
 
 volumes:
@@ -16,10 +16,8 @@ services:
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
-      - "4317:4317/tcp"
-      - "8081:8081/tcp"
     volumes:
-      - ${CFG_PATH}:/etc/nginx/nginx.conf:ro
+      - ${CFG_PATH}:/etc/nginx
       - ${GENERAL_CERTS_PATH}/fullchain.pem:/general-certs/cert.pem:ro
       - ${GENERAL_CERTS_PATH}/privkey.pem:/general-certs/key.pem:ro
       - ${DNS_CERTS_PATH}/fullchain.pem:/dns-certs/cert.pem:ro
@@ -30,6 +28,4 @@ services:
       - ${TG_API_CERTS_PATH}/privkey.pem:/tg-certs/key.pem:ro
       - tg-bot-api_tg-bot-api:/var/lib/telegram-bot-api
     networks:
-      general_general:
-        ipv4_address: 172.23.0.254
-      open-observe_open-observe:
+      - general

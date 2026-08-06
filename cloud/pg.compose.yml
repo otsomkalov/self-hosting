@@ -1,5 +1,7 @@
+name: pg
+
 networks:
-  general_general:
+  general:
     external: true
 
 services:
@@ -10,6 +12,6 @@ services:
     environment:
       POSTGRES_PASSWORD: ${PG_PASS}
     volumes:
-      - /pg/prd:/var/lib/postgresql/data
+      - ~/pg:/var/lib/postgresql
     networks:
-      general_general:
+      - general

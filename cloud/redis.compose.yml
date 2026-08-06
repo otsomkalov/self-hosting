@@ -1,3 +1,5 @@
+name: redis
+
 volumes:
   redis-dev:
   redis-prd:

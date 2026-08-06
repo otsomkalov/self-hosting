@@ -1,5 +1,7 @@
+name: vpn
+
 networks:
-  general_general:
+  general:
     external: true
 
 volumes:
@@ -28,5 +30,5 @@ services:
     volumes:
       - wg:/etc/wireguard
     networks:
-      general_general:
-        ipv4_address: 172.23.0.252
+      general:
+        ipv4_address: 172.16.0.254
