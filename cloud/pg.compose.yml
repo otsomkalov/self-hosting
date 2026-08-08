@@ -4,6 +4,9 @@ networks:
   general:
     external: true
 
+volumes:
+  pg:
+
 services:
   pg:
     container_name: pg
@@ -12,6 +15,7 @@ services:
     environment:
       POSTGRES_PASSWORD: ${PG_PASS}
     volumes:
-      - ~/pg:/var/lib/postgresql
+      - pg:/var/lib/postgresql
+      - ~/backups/pg:/backup
     networks:
       - general
