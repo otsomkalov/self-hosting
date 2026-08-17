@@ -10,7 +10,9 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - mongo-dev:/data
+      - mongo-dev:/data/db
+      - mongo-dev:/data/configdb
+      - ~/backups/mongo:/backup
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${DEV_MONGO_PASS}
@@ -21,7 +23,8 @@ services:
     image: mongo:latest
     restart: always
     volumes:
-      - mongo-prd:/data
+      - mongo-prd:/data/db
+      - mongo-prd:/data/configdb
       - ~/backups/mongo:/backup
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
