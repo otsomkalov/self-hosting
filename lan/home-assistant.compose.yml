@@ -20,3 +20,14 @@ services:
       - 8123
     networks:
       - general
+  esphome:
+    image: ghcr.io/esphome/esphome
+    container_name: esphome
+    volumes:
+      - ~/esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    expose:
+      - 6052
+    networks:
+      - general
