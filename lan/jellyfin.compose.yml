@@ -7,8 +7,36 @@ networks:
 volumes:
   jellyfin-cfg:
   jellyfin-cache:
+  radarr-cfg:
+  sonarr-cfg:
 
 services:
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Kyiv
+    volumes:
+      - radarr-cfg:/config
+      - /mnt/data:/data
+    networks:
+      - general
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Kyiv
+    volumes:
+      - sonarr-cfg:/config
+      - /mnt/data:/data
+    networks:
+      - general
   jellyfin:
     image: jellyfin/jellyfin
     container_name: jellyfin
@@ -25,7 +53,7 @@ services:
     volumes:
       - jellyfin-cfg:/config
       - jellyfin-cache:/cache
-      - /mnt/downloads:/media
+      - /mnt/data/media:/media
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     networks:

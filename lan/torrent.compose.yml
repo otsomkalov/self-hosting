@@ -22,7 +22,7 @@ services:
       - "6881"
     volumes:
       - torrent:/config
-      - /mnt/downloads:/downloads
+      - /mnt/data/torrents:/data/torrents
     networks:
       - general
 

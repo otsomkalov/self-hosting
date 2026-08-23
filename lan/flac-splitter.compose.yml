@@ -8,5 +8,5 @@ services:
     container_name: flac-splitter
     restart: unless-stopped
     volumes:
-      - /mnt/downloads/music:/input
+      - /mnt/data/music:/input
       - /music:/output

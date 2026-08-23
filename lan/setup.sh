@@ -4,14 +4,14 @@ setup_dir="$HOME/self-hosting/lan"
 echo "Step 1. Mount drive"
 
 sudo mkdir /mnt
-sudo mkdir /mnt/downloads
+sudo mkdir /mnt/data
 sudo lsblk
 
 echo "Enter the device name of the drive you want to mount (e.g., /dev/sdb1):"
 read drive
-sudo mount -t ext4 $drive /mnt/downloads
+sudo mount -t ext4 $drive /mnt/data
 
-echo "$drive /mnt/downloads ext4 defaults 0 0" | sudo tee -a /etc/fstab
+echo "$drive /mnt/data ext4 defaults 0 0" | sudo tee -a /etc/fstab
 
 ###
 echo "Step 2. Start ADO agent"

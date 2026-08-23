@@ -6,6 +6,7 @@ networks:
 
 volumes:
   jackett-data:
+  flaresolverr-config:
 
 services:
   jackett:
@@ -21,7 +22,17 @@ services:
       - 9117
     volumes:
       - jackett-data:/config
-      - /mnt/downloads:/downloads
+    networks:
+      - general
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: always
+    volumes:
+      - flaresolverr-config:/config
+    environment:
+      - LOG_LEVEL=info
     networks:
       - general
 

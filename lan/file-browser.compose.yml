@@ -19,7 +19,7 @@ services:
     expose:
       - 8080
     volumes:
-      - /mnt/downloads:/data
+      - /mnt/data/torrents:/data
       - file-browser:/config
     networks:
       - general
