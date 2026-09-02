@@ -70,6 +70,48 @@ find_cues_single_level() {
     find "$dir" -maxdepth 1 -type f \( -name "*.cue" -o -name "*.CUE" \)
 }
 
+# Function to check if a file is UTF-8 encoded
+is_utf8() {
+    local file_path="$1"
+    iconv -f UTF-8 -t UTF-8 "$file_path" >/dev/null 2>&1
+}
+
+# Normalize CUE encoding to UTF-8 before feeding it to shnsplit
+convert_cue_to_utf8() {
+    local cue_file="$1"
+    local tmp_file
+    local charset
+    local enc
+
+    if is_utf8 "$cue_file"; then
+        return 0
+    fi
+
+    charset=$(file -bi "$cue_file" | sed 's/.*charset=//')
+    if [ -n "$charset" ] && [ "$charset" != "unknown-8bit" ] && [ "$charset" != "binary" ]; then
+        tmp_file="$(mktemp "${cue_file}.XXXXXX")"
+        if iconv -f "$charset" -t UTF-8 "$cue_file" > "$tmp_file" 2>/dev/null; then
+            mv "$tmp_file" "$cue_file"
+            log_info "Converted CUE file to UTF-8: $cue_file"
+            return 0
+        fi
+        rm -f "$tmp_file"
+    fi
+
+    for enc in WINDOWS-1251 CP1251 ISO-8859-1 UTF-16LE UTF-16BE; do
+        tmp_file="$(mktemp "${cue_file}.XXXXXX")"
+        if iconv -f "$enc" -t UTF-8 "$cue_file" > "$tmp_file" 2>/dev/null; then
+            mv "$tmp_file" "$cue_file"
+            log_info "Converted CUE file to UTF-8 using $enc: $cue_file"
+            return 0
+        fi
+        rm -f "$tmp_file"
+    done
+
+    log_error "Unable to convert CUE file to UTF-8: $cue_file"
+    return 1
+}
+
 # Function to process a directory with split-ready FLAC+CUE
 process_flac_cue_split() {
     local src_dir="$1"
@@ -94,6 +136,11 @@ process_flac_cue_split() {
     # Check if files are complete
     if ! is_complete "$src_dir"; then
         log_info "Files still downloading in $src_dir, skipping"
+        return
+    fi
+
+    if ! convert_cue_to_utf8 "$cue_file"; then
+        log_error "Skipping split for $flac_file because the CUE file could not be converted to UTF-8"
         return
     fi
     
@@ -125,37 +172,6 @@ process_flac_cue_split() {
     fi
 }
 
-# Function to copy already-split album
-copy_presplit_album() {
-    local src_dir="$1"
-    local rel_path="$2"
-    local output_subdir
-    
-    output_subdir="$OUTPUT_DIR/$rel_path"
-    mkdir -p "$output_subdir"
-    
-    log_info "Album already split, copying from $src_dir to $output_subdir"
-    
-    # Copy all FLAC files while preserving metadata
-    for flac_file in "$src_dir"/*.flac "$src_dir"/*.FLAC; do
-        if [ -f "$flac_file" ]; then
-            cp -p "$flac_file" "$output_subdir/" 2>/dev/null || true
-        fi
-    done
-    
-    # Copy other related files (cue, log, etc.)
-    for extra_file in "$src_dir"/*.cue "$src_dir"/*.log "$src_dir"/*.m3u; do
-        if [ -f "$extra_file" ]; then
-            cp -p "$extra_file" "$output_subdir/" 2>/dev/null || true
-        fi
-    done
-    
-    # Mark directory as processed
-    mark_as_processed "$src_dir"
-    
-    log_info "Copied album from $src_dir"
-}
-
 # Function to scan and process directories recursively
 scan_and_process() {
     local base_dir="$1"
@@ -181,19 +197,21 @@ scan_and_process() {
         # Calculate relative path for output structure
         rel_path="${dir#$base_dir/}"
         
-        # Check if already split (multiple FLAC files)
+        # Skip already split FLAC albums without copying them to the output directory
         if has_multiple_flacs "$dir"; then
-            copy_presplit_album "$dir" "$rel_path"
+            log_info "Directory $dir already contains multiple FLAC files; skipping"
+            mark_as_processed "$dir"
+            continue
+        fi
+
+        # Check for CUE file to split
+        if find_cues_single_level "$dir" | grep -q .; then
+            # Change to source directory for shnsplit (it outputs in current dir)
+            cd "$dir" || continue
+            process_flac_cue_split "$dir" "$rel_path"
+            cd "$INPUT_DIR" || continue
         else
-            # Check for CUE file to split
-            if find_cues_single_level "$dir" | grep -q .; then
-                # Change to source directory for shnsplit (it outputs in current dir)
-                cd "$dir" || continue
-                process_flac_cue_split "$dir" "$rel_path"
-                cd "$INPUT_DIR" || continue
-            else
-                log_info "Directory $dir has FLAC but no CUE file, skipping"
-            fi
+            log_info "Directory $dir has FLAC but no CUE file, skipping"
         fi
     done
 }
@@ -230,13 +248,15 @@ inotifywait -m -r -e close_write,moved_to \
                 rel_path="${dir#$INPUT_DIR/}"
                 
                 if has_multiple_flacs "$dir"; then
-                    copy_presplit_album "$dir" "$rel_path"
-                else
-                    if find_cues_single_level "$dir" | grep -q .; then
-                        cd "$dir" || continue
-                        process_flac_cue_split "$dir" "$rel_path"
-                        cd "$INPUT_DIR" || continue
-                    fi
+                    log_info "Directory $dir already contains multiple FLAC files; skipping"
+                    mark_as_processed "$dir"
+                    continue
+                fi
+
+                if find_cues_single_level "$dir" | grep -q .; then
+                    cd "$dir" || continue
+                    process_flac_cue_split "$dir" "$rel_path"
+                    cd "$INPUT_DIR" || continue
                 fi
             else
                 log_info "Files still downloading in $dir, will retry"

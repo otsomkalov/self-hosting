@@ -1,0 +1,212 @@
+name: media
+
+networks:
+  general:
+    external: true
+
+volumes:
+  jackett-data:
+  jellyfin-cfg:
+  jellyfin-cache:
+  radarr-cfg:
+  sonarr-cfg:
+  lidarr-cfg:
+  flaresolverr-config:
+  torrent:
+  navidrome:
+
+services:
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: always
+    volumes:
+      - flaresolverr-config:/config
+    environment:
+      - LOG_LEVEL=info
+    networks:
+      - general
+  
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - AUTO_UPDATE=true #optional
+    expose:
+      - 9117
+    volumes:
+      - jackett-data:/config
+    networks:
+      - general
+
+  oauth2-jackett:
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-jackett
+    restart: unless-stopped
+    environment: 
+      OAUTH2_PROXY_PROVIDER: keycloak-oidc
+      OAUTH2_PROXY_CLIENT_ID: ${JACKETT_CLIENT_ID}
+      OAUTH2_PROXY_CLIENT_SECRET: ${JACKETT_CLIENT_SECRET}
+      OAUTH2_PROXY_COOKIE_SECRET: ${COOKIE_SECRET}
+      OAUTH2_PROXY_REDIRECT_URL: https://jackett.server.local/oauth2/callback
+      OAUTH2_PROXY_UPSTREAMS: http://jackett:9117
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+      OAUTH2_PROXY_OIDC_ISSUER_URL: ${ISSUER_URL}
+      OAUTH2_PROXY_REVERSE_PROXY: true
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
+    expose:
+      - 4180
+    depends_on:
+      - jackett
+    networks:
+      - general
+
+  torrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: torrent
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Kyiv
+      - WEBUI_PORT=8080
+    expose:
+      - "8080"
+      - "6881"
+    depends_on:
+      - jackett
+      - flaresolverr
+    volumes:
+      - torrent:/config
+      - /mnt/data/torrents:/data/torrents
+    networks:
+      - general
+
+  oauth2-torrent:
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-torrent
+    restart: unless-stopped
+    environment: 
+      OAUTH2_PROXY_PROVIDER: keycloak-oidc
+      OAUTH2_PROXY_CLIENT_ID: ${TORRENT_CLIENT_ID}
+      OAUTH2_PROXY_CLIENT_SECRET: ${TORRENT_CLIENT_SECRET}
+      OAUTH2_PROXY_COOKIE_SECRET: ${COOKIE_SECRET}
+      OAUTH2_PROXY_REDIRECT_URL: https://torrent.server.local/oauth2/callback
+      OAUTH2_PROXY_UPSTREAMS: http://torrent:8080
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+      OAUTH2_PROXY_OIDC_ISSUER_URL: ${ISSUER_URL}
+      OAUTH2_PROXY_REVERSE_PROXY: true
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
+    expose:
+      - 4180
+    depends_on:
+      - torrent
+    networks:
+      - general
+      
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    depends_on:
+      - torrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Kyiv
+    volumes:
+      - radarr-cfg:/config
+      - /mnt/data:/data
+    networks:
+      - general
+  
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    depends_on:
+      - torrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Kyiv
+    volumes:
+      - sonarr-cfg:/config
+      - /mnt/data:/data
+    networks:
+      - general
+  
+  lidarr:
+    image: linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    depends_on:
+      - torrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Kyiv
+    volumes:
+      - lidarr-cfg:/config
+      - /mnt/data:/data
+    networks:
+      - general
+  
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    user: "1000:1000"
+    group_add:
+      - 991
+    restart: always
+    depends_on:
+      - sonarr
+      - radarr
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://192.168.3.254
+      - TZ=Europe/Kyiv
+    ports:
+      - "7359:7359/udp"
+      - "8096:8096/tcp"
+    volumes:
+      - jellyfin-cfg:/config
+      - jellyfin-cache:/cache
+      - /mnt/data/media:/media
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    networks:
+      - general
+  
+  flac-splitter:
+    build: 
+      context: .
+      dockerfile: flac-splitter.Dockerfile
+    container_name: flac-splitter
+    restart: unless-stopped
+    user: "1000:1000"
+    environment:
+      - INPUT_DIR=/data/torrents/music
+      - OUTPUT_DIR=/data/torrents/music
+    volumes:
+      - /mnt/data:/data
+
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    depends_on:
+      - lidarr
+      - flac-splitter
+    environment:
+      - ND_LOGLEVEL=info
+    volumes:
+      - navidrome:/data
+      - /mnt/data/media/music:/music:ro
+    networks:
+      - general

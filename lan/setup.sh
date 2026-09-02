@@ -63,28 +63,14 @@ docker compose -f $setup_dir/mp4-to-webm-tg-bot.compose.yml \
 up -d
 
 ###
-echo "Step 9. Start jackett"
-
-docker compose -f $setup_dir/jackett.compose.yml \
---env-file env.d/jackett.env \
-up -d
-
-###
-echo "Step 10. Start torrent"
-
-docker compose -f $setup_dir/torrent.compose.yml \
---env-file env.d/torrent.env \
-up -d
-
-###
-echo "Step 11. Start file browser"
+echo "Step 9. Start file browser"
 
 docker compose -f $setup_dir/file-browser.compose.yml \
 --env-file env.d/file-browser.env \
 up -d
 
 ###
-echo "Step 12. Setup Intel GPU drivers"
+echo "Step 10. Setup Intel GPU drivers"
 
 wget -qO - https://repositories.intel.com/graphics/intel-graphics.key | sudo apt-key add -
 sudo apt-add-repository 'deb [arch=amd64] https://repositories.intel.com/graphics/ubuntu focal main'
@@ -95,61 +81,50 @@ echo "LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri" | sudo tee -a /etc/envir
 echo "LIBVA_DRIVER_NAME=iHD" | sudo tee -a /etc/environment
 
 ###
-echo "Step 13. Start jellyfin"
+echo "Step 11. Start media stack"
 
-docker compose -f $setup_dir/jellyfin.compose.yml \
---env-file env.d/jellyfin.env \
+docker compose -f $setup_dir/media.compose.yml \
+--env-file env.d/media.env \
 up -d
 
 sudo ufw allow 7359/udp
 
 ###
-echo "Step 14. Start Home Assistant"
+echo "Step 12. Start Home Assistant"
 
 docker compose -f $setup_dir/home-assistant.compose.yml \
 --env-file env.d/home-assistant.env \
 up -d
 
 ###
-echo "Step 15. Start Navidrome"
-
-docker compose -f $setup_dir/navidrome.compose.yml \
---env-file env.d/navidrome.env \
-up -d
-
-docker compose -f $setup_dir/flac-splitter.compose.yml \
---env-file env.d/flac-splitter.env \
-up -d
-
-###
-echo "Step 16. Start monitoring stack"
+echo "Step 13. Start monitoring stack"
 
 docker compose -f $setup_dir/monitoring.compose.yml \
 --env-file env.d/monitoring.env \
 up -d
 
 ###
-echo "Step 17. Start Calibre Web"
+echo "Step 14. Start Calibre Web"
 
 docker compose -f $setup_dir/calibre.compose.yml \
 --env-file env.d/calibre.env \
 up -d
 
 ###
-echo "Step 18. Setup mkcert"
+echo "Step 15. Setup mkcert"
 
 curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
 chmod +x mkcert-v*-linux-amd64
 sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 ###
-echo "Step 19. Generate SSL certificates"
+echo "Step 16. Generate SSL certificates"
 
 mkcert -install
 mkcert *.server.local
 
 ###
-echo "Step 20. Start Nginx"
+echo "Step 17. Start Nginx"
 
 docker compose -f $setup_dir/nginx.compose.yml \
 --env-file env.d/nginx.env \
