@@ -192,7 +192,7 @@ services:
     user: "1000:1000"
     environment:
       - INPUT_DIR=/data/torrents/music
-      - OUTPUT_DIR=/data/torrents/music
+      - OUTPUT_DIR=/data/media/music
     volumes:
       - /mnt/data:/data
 

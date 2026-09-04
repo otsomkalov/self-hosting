@@ -50,11 +50,12 @@ is_complete() {
     return 0
 }
 
-# Function to check if directory contains multiple FLAC files
-has_multiple_flacs() {
+# Function to check if directory already contains a complete pre-split album
+# (multiple FLAC files in the same directory, ready to keep as-is)
+is_pre_split_album() {
     local dir="$1"
     local flac_count
-    flac_count=$(find "$dir" -maxdepth 1 -name "*.flac" -o -name "*.FLAC" 2>/dev/null | wc -l)
+    flac_count=$(find "$dir" -maxdepth 1 -type f \( -iname "*.flac" \) 2>/dev/null | wc -l)
     [ "$flac_count" -gt 1 ]
 }
 
@@ -115,10 +116,14 @@ convert_cue_to_utf8() {
 # Function to process a directory with split-ready FLAC+CUE
 process_flac_cue_split() {
     local src_dir="$1"
-    local rel_path="$2"
     local flac_file
     local cue_file
     local output_subdir
+    local performer
+    local album
+    local discid
+    local split_file
+    local split_files=()
     
     # Find FLAC file
     flac_file=$(find_flacs_single_level "$src_dir" | head -1)
@@ -133,6 +138,13 @@ process_flac_cue_split() {
         return
     fi
     
+    # If the album is already pre-split into multiple FLAC tracks, do not copy it.
+    if is_pre_split_album "$src_dir"; then
+        log_info "Album already pre-split in $src_dir; skipping"
+        mark_as_processed "$src_dir"
+        return
+    fi
+
     # Check if files are complete
     if ! is_complete "$src_dir"; then
         log_info "Files still downloading in $src_dir, skipping"
@@ -143,9 +155,16 @@ process_flac_cue_split() {
         log_error "Skipping split for $flac_file because the CUE file could not be converted to UTF-8"
         return
     fi
-    
-    output_subdir="$OUTPUT_DIR/$rel_path"
-    mkdir -p "$output_subdir"
+
+    performer=$(cueprint -t '%P' "$cue_file")
+    album=$(cueprint -t '%T' "$cue_file")
+    discid=$(cueprint -t '%D' "$cue_file")
+    if [ -z "$performer" ] || [ -z "$album" ] || [ -z "$discid" ]; then
+        log_error "Skipping split for $flac_file because performer, album, or disc ID is missing"
+        return
+    fi
+
+    output_subdir="$OUTPUT_DIR/$performer/$album/$discid"
     
     log_info "Splitting: $flac_file with $(basename "$cue_file")"
     
@@ -155,12 +174,28 @@ process_flac_cue_split() {
     # -o flac: output FLAC format (inherits metadata)
     if shnsplit -f "$cue_file" -t "%n-%t" -o flac "$flac_file" 2>&1; then
         log_info "Successfully split $(basename "$flac_file")"
-        
+
+        while IFS= read -r split_file; do
+            [ "$split_file" = "$flac_file" ] || split_files+=("$split_file")
+        done < <(find "$src_dir" -maxdepth 1 -type f \( -name "*.flac" -o -name "*.FLAC" \) -printf '%p\n')
+
+        if [ "${#split_files[@]}" -eq 0 ]; then
+            log_error "No split tracks found for $(basename "$flac_file")"
+            return
+        fi
+
+        # Apply CUE metadata to the generated tracks before moving them.
+        if ! cuetag "$cue_file" "${split_files[@]}"; then
+            log_error "Failed to tag split tracks for $(basename "$flac_file")"
+            return
+        fi
+        log_info "Applied CUE metadata to split tracks"
+
+        mkdir -p "$output_subdir"
+
         # Move split files to output directory
-        for split_file in split-track-*.flac; do
-            if [ -f "$split_file" ]; then
-                mv "$split_file" "$output_subdir/"
-            fi
+        for split_file in "${split_files[@]}"; do
+            mv "$split_file" "$output_subdir/"
         done
         
         # Mark directory as processed
@@ -198,7 +233,7 @@ scan_and_process() {
         rel_path="${dir#$base_dir/}"
         
         # Skip already split FLAC albums without copying them to the output directory
-        if has_multiple_flacs "$dir"; then
+        if is_pre_split_album "$dir"; then
             log_info "Directory $dir already contains multiple FLAC files; skipping"
             mark_as_processed "$dir"
             continue
@@ -247,7 +282,7 @@ inotifywait -m -r -e close_write,moved_to \
             if is_complete "$dir"; then
                 rel_path="${dir#$INPUT_DIR/}"
                 
-                if has_multiple_flacs "$dir"; then
+                if is_pre_split_album "$dir"; then
                     log_info "Directory $dir already contains multiple FLAC files; skipping"
                     mark_as_processed "$dir"
                     continue
