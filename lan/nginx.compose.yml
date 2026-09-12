@@ -13,9 +13,10 @@ services:
       - "80:80/tcp"
       - "443:443/tcp"
     volumes:
-      - ${CFG_PATH}:/etc/nginx
-      - ${CERTS_PATH}/_wildcard.server.local.pem:/etc/nginx/cert.pem:ro
-      - ${CERTS_PATH}/_wildcard.server.local-key.pem:/etc/nginx/key.pem:ro
+      - ${CFG_PATH}/conf.d:/etc/nginx
+      - ${CFG_PATH}/www:/var/www/server.local
+      - ${CERTS_PATH}/server.local.pem:/etc/nginx/cert.pem:ro
+      - ${CERTS_PATH}/server.local-key.pem:/etc/nginx/key.pem:ro'
     networks:
       general:
         ipv4_address: 172.18.0.254
